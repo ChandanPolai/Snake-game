@@ -1,0 +1,142 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&family=Rubik+Doodle+Shadow&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-transform: capitalize;
+  font-family: "Preahvihear", sans-serif;
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+}
+
+:root {
+  --body-: #2e0249;
+  --snake-container: #570a57;
+  --main-: #a91079;
+  --button-bg-: #88fff7;
+  --snake-body: #f7ec09;
+  --food-: #3ec70b;
+  --snake-head: #ff1e1e;
+}
+
+.snake-container {
+  height: 100vh;
+  width: 100%;
+  background: gray;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: var(--body-);
+}
+
+.snake-container main {
+  background: pink;
+  width: 100%;
+  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5em;
+  background: var(--main-);
+}
+
+main h2 {
+  color: var(--button-bg-);
+}
+
+main #pause {
+  border: none;
+  outline: none;
+  color: var(--body-);
+  font-weight: 700;
+  background: var(--snake-body);
+  padding: 0.8em 2em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 0.4em;
+}
+
+main #pause:hover {
+  background: var(--button-bg-);
+}
+
+main .rankers {
+  border: none;
+  outline: none;
+  color: white;
+  font-weight: 700;
+  background: #49108b;
+  padding: 0.5em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 0.4em;
+}
+
+.rankers:hover {
+  background: white;
+  color: #49108b;
+}
+
+.snake-container .snake-div {
+  background: var(--snake-container);
+  height: 100%;
+  width: 50%;
+  display: grid;
+  grid-template-rows: repeat(18, 1fr);
+  grid-template-columns: repeat(18, 1fr);
+}
+
+.snake {
+  background: #ffea00;
+  border-radius: 50%;
+}
+
+.snakehead {
+  position: relative;
+  background: var(--snake-head);
+  clip-path: polygon(
+    0% 15%,
+    15% 15%,
+    15% 0%,
+    85% 0%,
+    85% 15%,
+    100% 15%,
+    100% 85%,
+    85% 85%,
+    85% 100%,
+    15% 100%,
+    15% 85%,
+    0% 85%
+  );
+}
+
+.food {
+  background: var(--food-);
+}
+
+.start {
+  position: absolute;
+  border: none;
+  outline: none;
+  color: var(--body-);
+  font-weight: 700;
+  background: var(--snake-body);
+  padding: 1em 3em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 0.4em;
+}
+
+.start:hover {
+  background: var(--button-bg-);
+}
+
+@media only screen and (max-width: 600px) {
+  .snake-container .snake-div {
+    width: 100%;
+  }
+}

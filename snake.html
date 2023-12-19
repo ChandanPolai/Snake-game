@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* Styling for the game board, cells, snake, and food */
+        #game-board {
+            display: grid;
+            grid-template-columns: repeat(20, 20px);
+            grid-template-rows: repeat(20, 20px);
+            background: green;
+            width: fit-content;
+        }
+
+        .cell {
+            width: 20px;
+            height: 20px;
+            border: 1px solid #ccc;
+        }
+
+        .snake {
+            background-color: #333;
+        }
+
+        .food {
+            background-color: red;
+            border-radius: 50%;
+        }
+    </style>
+    <title>Snake Game</title>
+</head>
+<body>
+    <!-- Game board container -->
+    <div id="game-board"></div>
+
+    <!-- JavaScript code for the Snake Game -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Game board and snake properties
+            const board = document.getElementById('game-board');
+            const width = 20;
+            const height = 20;
+            const cellSize = 20;
+            let snake = [{ x: 10, y: 10 }];
+            let food = getRandomPosition();
+            let direction = 'right';
+            let isGameOver = false;
+
+            // Function to get a random position on the game board
+            function getRandomPosition() {
+                return {
+                    x: Math.floor(Math.random() * width),
+                    y: Math.floor(Math.random() * height)
+                };
+            }
+
+            // Function to create the initial game board layout
+            function createBoard() {
+                for (let row = 0; row < height; row++) {
+                    for (let col = 0; col < width; col++) {
+                        const cell = document.createElement('div');
+                        cell.classList.add('cell');
+                        board.appendChild(cell);
+                    }
+                }
+            }
+
+            // Function to draw the snake on the game board
+            function drawSnake() {
+                board.innerHTML = '';
+                snake.forEach(segment => {
+                    const snakeElement = document.createElement('div');
+                    snakeElement.classList.add('cell', 'snake');
+                    snakeElement.style.gridRowStart = segment.y + 1;
+                    snakeElement.style.gridColumnStart = segment.x + 1;
+                    board.appendChild(snakeElement);
+                });
+            }
+
+            // Function to draw the food on the game board
+            function drawFood() {
+                const foodElement = document.createElement('div');
+                foodElement.classList.add('cell', 'food');
+                foodElement.style.gridRowStart = food.y + 1;
+                foodElement.style.gridColumnStart = food.x + 1;
+                board.appendChild(foodElement);
+            }
+
+            // Function to move the snake based on the current direction
+            function moveSnake() {
+                const head = { ...snake[0] };
+                switch (direction) {
+                    case 'up':
+                        head.y--;
+                        break;
+                    case 'down':
+                        head.y++;
+                        break;
+                    case 'left':
+                        head.x--;
+                        break;
+                    case 'right':
+                        head.x++;
+                        break;
+                }
+
+                snake.unshift(head);
+
+                if (head.x === food.x && head.y === food.y) {
+                    food = getRandomPosition();
+                } else {
+                    snake.pop();
+                }
+
+                if (head.x < 0 || head.x >= width || head.y < 0 || head.y >= height) {
+                    gameOver();
+                }
+
+                for (let i = 1; i < snake.length; i++) {
+                    if (head.x === snake[i].x && head.y === snake[i].y) {
+                        gameOver();
+                    }
+                }
+            }
+
+            // Function to handle the game over scenario
+            function gameOver() {
+                isGameOver = true;
+                alert('Game Over!');
+                resetGame();
+            }
+
+            // Function to reset the game state
+            function resetGame() {
+                snake = [{ x: 10, y: 10 }];
+                food = getRandomPosition();
+                direction = 'right';
+                isGameOver = false;
+            }
+
+            // Function to handle key presses and change the snake's direction
+            function handleKeyPress(event) {
+                if (isGameOver) return;
+
+                switch (event.key) {
+                    case 'ArrowUp':
+                        if (direction !== 'down') {
+                            direction = 'up';
+                        }
+                        break;
+                    case 'ArrowDown':
+                        if (direction !== 'up') {
+                            direction = 'down';
+                        }
+                        break;
+                    case 'ArrowLeft':
+                        if (direction !== 'right') {
+                            direction = 'left';
+                        }
+                        break;
+                    case 'ArrowRight':
+                        if (direction !== 'left') {
+                            direction = 'right';
+                        }
+                        break;
+                }
+            }
+
+            // Function to handle touch events and change the snake's direction
+            function handleTouchStart(event) {
+                if (isGameOver) return;
+
+                const touchStartX = event.touches[0].clientX;
+                const touchStartY = event.touches[0].clientY;
+
+                document.addEventListener('touchmove', function handleTouchMove(e) {
+                    const touchEndX = e.touches[0].clientX;
+                    const touchEndY = e.touches[0].clientY;
+
+                    const deltaX = touchEndX - touchStartX;
+                    const deltaY = touchEndY - touchStartY;
+
+                    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                        // Horizontal swipe
+                        if (deltaX > 0 && direction !== 'left') {
+                            direction = 'right';
+                        } else if (deltaX < 0 && direction !== 'right') {
+                            direction = 'left';
+                        }
+                    } else {
+                        // Vertical swipe
+                        if (deltaY > 0 && direction !== 'up') {
+                            direction = 'down';
+                        } else if (deltaY < 0 && direction !== 'down') {
+                            direction = 'up';
+                        }
+                    }
+
+                    // Remove the touchmove event listener after handling the swipe
+                    document.removeEventListener('touchmove', handleTouchMove);
+                });
+            }
+
+            // Function for the game loop that controls the game flow
+            function gameLoop() {
+                if (isGameOver) return;
+
+                moveSnake();
+                drawSnake();
+                drawFood();
+
+                // Call the game loop again after a delay (controls the game speed)
+                setTimeout(gameLoop, 200);
+            }
+
+            // Initial setup: create the board, draw the snake and food, start the game loop
+            createBoard();
+            drawSnake();
+            drawFood();
+            gameLoop();
+
+            // Event listener for key presses to change the snake's direction
+            document.addEventListener('keydown', handleKeyPress);
+
+            // Event listener for touch events to change the snake's direction
+            document.addEventListener('touchstart', handleTouchStart);
+        });
+    </script>
+</body>
+</html>
