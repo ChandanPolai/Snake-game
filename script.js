@@ -52,7 +52,7 @@ function gameEngine() {
     gameOver.playbackRate=2;
     bgMusic.pause();
     inputDir = { x: 0, y: 0 };
-    alert('Game over! Press any key to start again.');
+    alert('Game is over! 🤖🤖please again play.');
     snakeArr = [{ x: 15, y: 14 }];
     gameStart.play();
     location.reload();
