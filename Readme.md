@@ -13,7 +13,7 @@ You can play the game [https://chandanpolai.github.io/Snake-game/]
 - Pause/Continue functionality to control the game flow.
 - Sound effects for snake movement, eating, and game over.
 
-## Screenshots📺
+## Screenshots
 
 ![Alt text](<images/Screenshot (17).png>)
 
@@ -42,9 +42,9 @@ To run the game locally, follow these steps:
 
 🐍If you'd like to contribute to the project, here's how you can help:
 
-➡️Report Bugs: Submit bug reports through the GitHub issues.
-➡️Enhancement Requests: Share your ideas for new features or improvements.
-➡️Code Contributions: Fork the repository, make changes, and submit pull requests.
+1. Report Bugs: Submit bug reports through the GitHub issues.
+2. Enhancement Requests: Share your ideas for new features or improvements.
+3. Code Contributions: Fork the repository, make changes, and submit pull requests.
 
 ## Acknowledgements
 Sound effects from [https://mixkit.co/].
