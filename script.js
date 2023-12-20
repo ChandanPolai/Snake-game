@@ -23,34 +23,39 @@ const snakediv = document.querySelector(".snake-div");
 // pause and continue variable
 const pauseBtn = document.querySelector('#pause');
 let isPaused = false;
+let gameStarted = false; // Variable to track whether the game has started
 
 // Add touch event listeners for swipe gestures on mobile
 let touchStartX = 0;
 let touchStartY = 0;
 
 document.addEventListener("touchstart", (event) => {
-  touchStartX = event.touches[0].clientX;
-  touchStartY = event.touches[0].clientY;
+  if (gameStarted) {
+    touchStartX = event.touches[0].clientX;
+    touchStartY = event.touches[0].clientY;
+  }
 });
 
 document.addEventListener("touchmove", (event) => {
-  const touchEndX = event.touches[0].clientX;
-  const touchEndY = event.touches[0].clientY;
+  if (gameStarted) {
+    const touchEndX = event.touches[0].clientX;
+    const touchEndY = event.touches[0].clientY;
 
-  const deltaX = touchEndX - touchStartX;
-  const deltaY = touchEndY - touchStartY;
+    const deltaX = touchEndX - touchStartX;
+    const deltaY = touchEndY - touchStartY;
 
-  // Adjust sensitivity based on your needs
-  const sensitivity = 10;
+    // Adjust sensitivity based on your needs
+    const sensitivity = 10;
 
-  if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > sensitivity) {
-    // Horizontal swipe
-    inputDir.x = deltaX > 0 ? 1 : -1;
-    inputDir.y = 0;
-  } else if (Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > sensitivity) {
-    // Vertical swipe
-    inputDir.x = 0;
-    inputDir.y = deltaY > 0 ? 1 : -1;
+    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > sensitivity) {
+      // Horizontal swipe
+      inputDir.x = deltaX > 0 ? 1 : -1;
+      inputDir.y = 0;
+    } else if (Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > sensitivity) {
+      // Vertical swipe
+      inputDir.x = 0;
+      inputDir.y = deltaY > 0 ? 1 : -1;
+    }
   }
 });
 
@@ -153,6 +158,7 @@ startbtn.addEventListener("click", (e) => {
   inputDir = { x: 0, y: 1 };
   bgMusic.play();
   pauseBtn.style.display = 'block'; // Show the pause button
+  gameStarted = true; // Set the gameStarted flag to true
 
   // only work in laptop key click🕹️🕹️
   document.addEventListener("keydown", handleKeyPress);
@@ -174,26 +180,28 @@ pauseBtn.addEventListener('click', () => {
 
 // Helper function to handle key presses
 function handleKeyPress(event) {
-  gameStart.play();
-  gameStart.playbackRate = 2;
-  switch (event.key) {
-    case 'ArrowUp':
-      inputDir.x = 0;
-      inputDir.y = -1;
-      break;
-    case 'ArrowDown':
-      inputDir.x = 0;
-      inputDir.y = 1;
-      break;
-    case 'ArrowLeft':
-      inputDir.x = -1;
-      inputDir.y = 0;
-      break;
-    case 'ArrowRight':
-      inputDir.x = 1;
-      inputDir.y = 0;
-      break;
-    default:
-      break;
+  if (gameStarted) {
+    gameStart.play();
+    gameStart.playbackRate = 2;
+    switch (event.key) {
+      case 'ArrowUp':
+        inputDir.x = 0;
+        inputDir.y = -1;
+        break;
+      case 'ArrowDown':
+        inputDir.x = 0;
+        inputDir.y = 1;
+        break;
+      case 'ArrowLeft':
+        inputDir.x = -1;
+        inputDir.y = 0;
+        break;
+      case 'ArrowRight':
+        inputDir.x = 1;
+        inputDir.y = 0;
+        break;
+      default:
+        break;
+    }
   }
 }
