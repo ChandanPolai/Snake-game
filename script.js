@@ -9,12 +9,12 @@ const myscore = document.querySelector('h2');
 myscore.textContent = `score ➡️${0}`;
 
 let score = 0;
-// game spped and fps control  🕹️🕹️🕹️
+// game speed and fps control  🕹️🕹️🕹️
 let speed = 10;
 let lastpaintTime = 0;
-// snake intail position
+// snake initial position
 let snakeArr = [{ x: 10, y: 5 }];
-// food intial position
+// food initial position
 let food = { x: 8, y: 6 };
 const highRank = document.querySelector('.rankers');
 const startbtn = document.querySelector('.start');
@@ -23,6 +23,36 @@ const snakediv = document.querySelector(".snake-div");
 // pause and continue variable
 const pauseBtn = document.querySelector('#pause');
 let isPaused = false;
+
+// Add touch event listeners for swipe gestures on mobile
+let touchStartX = 0;
+let touchStartY = 0;
+
+document.addEventListener("touchstart", (event) => {
+  touchStartX = event.touches[0].clientX;
+  touchStartY = event.touches[0].clientY;
+});
+
+document.addEventListener("touchmove", (event) => {
+  const touchEndX = event.touches[0].clientX;
+  const touchEndY = event.touches[0].clientY;
+
+  const deltaX = touchEndX - touchStartX;
+  const deltaY = touchEndY - touchStartY;
+
+  // Adjust sensitivity based on your needs
+  const sensitivity = 10;
+
+  if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > sensitivity) {
+    // Horizontal swipe
+    inputDir.x = deltaX > 0 ? 1 : -1;
+    inputDir.y = 0;
+  } else if (Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > sensitivity) {
+    // Vertical swipe
+    inputDir.x = 0;
+    inputDir.y = deltaY > 0 ? 1 : -1;
+  }
+});
 
 function main(ctime) {
   // ⬇️control the game continue and pause 
@@ -38,7 +68,7 @@ function main(ctime) {
   gameEngine();
 }
 
-// all the main thins in this function
+// all the main things in this function
 function gameEngine() {
   function isCollide(snake) {
     for (let i = 1; i < snakeArr.length; i++) {
@@ -57,19 +87,19 @@ function gameEngine() {
   // game over function
   if (isCollide(snakeArr)) {
     gameOver.play();
-    gameOver.playbackRate=2;
+    gameOver.playbackRate = 2;
     bgMusic.pause();
     inputDir = { x: 0, y: 0 };
-    alert('Game is over! 🤖🤖please again play.');
+    alert('Game is over! 🤖🤖please play again.');
     snakeArr = [{ x: 15, y: 14 }];
     gameStart.play();
     location.reload();
   }
 
-    // 🍴snake eat function and score increase functionality and localstorage to  store user score
+  // 🍴snake eat function and score increase functionality and local storage to store user score
   if (snakeArr[0].y === food.y && snakeArr[0].x === food.x) {
     eatSound.play();
-    eatSound.playbackRate=1.5;
+    eatSound.playbackRate = 1.5;
     score++;
     myscore.textContent = `score ➡️${score}`;
     localStorage.setItem('userscore', score);
@@ -100,7 +130,7 @@ function gameEngine() {
     }
     snakediv.append(snakeElement);
   });
-  
+
   // 😌create food element
   foodElement = document.createElement("div");
   foodElement.style.gridRowStart = food.y;
@@ -111,7 +141,7 @@ function gameEngine() {
 
 window.requestAnimationFrame(main);
 
-// get the user high score from the localstorage
+// get the user high score from the local storage
 highRank.addEventListener('click', () => {
   let Rank = localStorage.getItem('userscore');
   highRank.textContent = `your highscore 🕹️${Rank}`;
@@ -123,32 +153,9 @@ startbtn.addEventListener("click", (e) => {
   inputDir = { x: 0, y: 1 };
   bgMusic.play();
   pauseBtn.style.display = 'block'; // Show the pause button
-  
+
   // only work in laptop key click🕹️🕹️
-  document.addEventListener("keydown", (event) => {
-    gameStart.play();
-    gameStart.playbackRate=2;
-    switch (event.key) {
-      case 'ArrowUp':
-        inputDir.x = 0;
-        inputDir.y = -1;
-        break;
-      case 'ArrowDown':
-        inputDir.x = 0;
-        inputDir.y = 1;
-        break;
-      case 'ArrowLeft':
-        inputDir.x = -1;
-        inputDir.y = 0;
-        break;
-      case 'ArrowRight':
-        inputDir.x = 1;
-        inputDir.y = 0;
-        break;
-      default:
-        break;
-    }
-  });
+  document.addEventListener("keydown", handleKeyPress);
 });
 
 // Add click event listener for the pause button
@@ -164,3 +171,29 @@ pauseBtn.addEventListener('click', () => {
     requestAnimationFrame(main); // Resume the game loop
   }
 });
+
+// Helper function to handle key presses
+function handleKeyPress(event) {
+  gameStart.play();
+  gameStart.playbackRate = 2;
+  switch (event.key) {
+    case 'ArrowUp':
+      inputDir.x = 0;
+      inputDir.y = -1;
+      break;
+    case 'ArrowDown':
+      inputDir.x = 0;
+      inputDir.y = 1;
+      break;
+    case 'ArrowLeft':
+      inputDir.x = -1;
+      inputDir.y = 0;
+      break;
+    case 'ArrowRight':
+      inputDir.x = 1;
+      inputDir.y = 0;
+      break;
+    default:
+      break;
+  }
+}
